@@ -5,24 +5,33 @@ import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Alerts from "./pages/Alerts";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 function App(){
     return (
         <Routes>
             <Route path="/" element={
                 <Login />
             } />
-            <Route path="/livefeed/:locationId" element={
-                <Layout><LiveFeed /></Layout>
-            } />
-            <Route path="/dashboard" element={
-                <Layout><Dashboard /></Layout>
-            } />
-            <Route path="/analytics" element={
-                <Layout><Analytics /></Layout>
-            } />
-            <Route path="/alerts" element={
-                <Layout><Alerts /></Layout>
-            } />
+            <Route element={
+                <ProtectedRoute >
+                    <Layout />
+                </ProtectedRoute>
+            }>
+
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/livefeed/:locationId" element={<LiveFeed />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/alerts" element={<Alerts />} />
+                <Route
+                    path="/livefeed"
+                    element={
+                        <h3 className="text-center mt-4">
+                            Please select a location from Dashboard.
+                        </h3>
+                    }
+                />
+
+            </Route>
         </Routes>
     )
 }
