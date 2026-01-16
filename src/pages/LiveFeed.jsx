@@ -1,6 +1,6 @@
 import {useParams} from 'react-router-dom';
 import { useState} from "react";
-import {locations} from "../data/locations";
+
 
 export default function LiveFeed() {
     const {locationId} = useParams();
