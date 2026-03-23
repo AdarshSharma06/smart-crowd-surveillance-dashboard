@@ -1,39 +1,54 @@
-import { Routes , Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
-import LiveFeed from "./pages/LiveFeed";
 import Dashboard from "./pages/Dashboard";
+import LiveFeed from "./pages/LiveFeed";
 import Analytics from "./pages/Analytics";
 import Alerts from "./pages/Alerts";
+import AlertDetails from "./pages/AlertDetails";
+
 import Layout from "./components/Layout";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-function App(){
+import LocationLayout from "./components/LocationLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+function App() {
+
     return (
         <Routes>
-            <Route path="/" element={
-                <Login />
-            } />
-            <Route element={
-                <ProtectedRoute >
-                    <Layout />
-                </ProtectedRoute>
-            }>
 
+            {/* Login */}
+            <Route path="/" element={<Login />} />
+
+            {/* Protected App */}
+            <Route
+                element={
+                    <ProtectedRoute>
+                        <Layout />
+                    </ProtectedRoute>
+                }
+            >
+
+                {/* Dashboard */}
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/livefeed/:locationId" element={<LiveFeed />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/alerts" element={<Alerts />} />
-                <Route
-                    path="/livefeed"
-                    element={
-                        <h3 className="text-center mt-4">
-                            Please select a location from Dashboard.
-                        </h3>
-                    }
-                />
+
+                {/* Location Control Panel */}
+                <Route path="/location/:locationId" element={<LocationLayout />}>
+
+                    <Route path="live" element={<LiveFeed />} />
+                    <Route path="analytics" element={<Analytics />} />
+
+                    {/* Alerts */}
+                    <Route path="alerts" element={<Alerts />} />
+
+                    {/* Alert Review Page */}
+                    <Route path="alerts/:alertId" element={<AlertDetails />} />
+
+                </Route>
 
             </Route>
+
         </Routes>
-    )
+    );
 }
 
-export default App
+export default App;

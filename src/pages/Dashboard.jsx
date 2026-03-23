@@ -4,6 +4,7 @@ import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+
     const [locations, setLocations] = useState([]);
     const [showForm, setShowForm] = useState(false);
 
@@ -13,8 +14,9 @@ export default function Dashboard() {
 
     const navigate = useNavigate();
 
-    // ✅ SAME LOGIC YOU ALREADY HAD (no regression)
+    // Fetch locations from Firestore
     useEffect(() => {
+
         if (!auth.currentUser) return;
 
         const locationsRef = collection(
@@ -25,19 +27,24 @@ export default function Dashboard() {
         );
 
         const unsubscribe = onSnapshot(locationsRef, (snapshot) => {
+
             const data = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             }));
+
             setLocations(data);
         });
 
         return () => unsubscribe();
+
     }, []);
 
-    // ➕ NEW: Add Location handler
+    // Add new location
     const handleAddLocation = async (e) => {
+
         e.preventDefault();
+
         if (!auth.currentUser) return;
 
         await addDoc(
@@ -50,7 +57,7 @@ export default function Dashboard() {
             }
         );
 
-        // reset form
+        // Reset form
         setName("");
         setType("Indoor");
         setCameras("");
@@ -59,24 +66,31 @@ export default function Dashboard() {
 
     return (
         <div>
+
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4">
+
                 <h2>Your Locations</h2>
+
                 <button
                     className="btn btn-primary"
                     onClick={() => setShowForm(!showForm)}
                 >
                     + Add Location
                 </button>
+
             </div>
 
-            {/* ➕ Add Location Form */}
+
+            {/* Add Location Form */}
             {showForm && (
+
                 <form
                     onSubmit={handleAddLocation}
                     className="card p-3 mb-4"
                     style={{ maxWidth: 400 }}
                 >
+
                     <input
                         className="form-control mb-2"
                         placeholder="Location Name"
@@ -106,21 +120,33 @@ export default function Dashboard() {
                     <button className="btn btn-success w-100">
                         Save Location
                     </button>
+
                 </form>
+
             )}
 
-            {/* Locations list */}
+
+            {/* Locations List */}
             {locations.length === 0 ? (
+
                 <div className="alert alert-info">
                     No locations added yet. Click <strong>Add Location</strong> to begin.
                 </div>
+
             ) : (
+
                 <div className="row">
+
                     {locations.map((loc) => (
+
                         <div className="col-md-4 mb-3" key={loc.id}>
+
                             <div className="card h-100">
+
                                 <div className="card-body">
+
                                     <h5 className="card-title">{loc.name}</h5>
+
                                     <p className="card-text">
                                         <strong>Type:</strong> {loc.type}
                                         <br />
@@ -129,16 +155,23 @@ export default function Dashboard() {
 
                                     <button
                                         className="btn btn-sm btn-outline-primary"
-                                        onClick={() => navigate(`/livefeed/${loc.id}`)}
+                                        onClick={() => navigate(`/location/${loc.id}/live`)}
                                     >
                                         View Live Feed
                                     </button>
+
                                 </div>
+
                             </div>
+
                         </div>
+
                     ))}
+
                 </div>
+
             )}
+
         </div>
     );
 }
